@@ -1,59 +1,91 @@
-import { contactList } from "./contact-list";
-
 const listHtml = document.getElementById("list");
+
+const createContactItem = (contactData) => {
+  const [name, vacancy, tel] = contactData;
+
+  const newContact = document.createElement("div");
+  newContact.className = "itemInfo__newConact";
+
+  const nameDiv = document.createElement("div");
+  nameDiv.textContent = `Имя: ${name.value}`;
+
+  const vacancyDiv = document.createElement("div");
+  vacancyDiv.textContent = `Вакансия: ${vacancy.value}`;
+
+  const phoneDiv = document.createElement("div");
+  phoneDiv.textContent = `Телефон: ${tel.value}`;
+
+  newContact.append(nameDiv, vacancyDiv, phoneDiv);
+
+  return newContact;
+};
+
+const renderContactsItems = (items, wrapper) => {
+  if (!items || !items.length) return;
+
+  items.forEach((contactData) => {
+    const contactEl = createContactItem(contactData);
+    wrapper.after(contactEl);
+  });
+};
+
+const createListItem = (key, items) => {
+  const li = document.createElement("li");
+  li.id = key;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "itemInfo";
+
+  const letterDiv = document.createElement("div");
+  letterDiv.textContent = key;
+
+  const countDiv = document.createElement("div");
+  countDiv.textContent = items.length;
+
+  wrapper.append(letterDiv, countDiv);
+  li.append(wrapper);
+
+  renderContactsItems(items, wrapper);
+  return li;
+};
 
 export const renderHtmlList = (list) => {
   listHtml.innerHTML = "";
 
   for (const key in list) {
-    const newItem = document.createElement("li");
-    newItem.className = "itemInfo";
-    const newLetter = document.createElement("div");
-    console.log(key);
-    newLetter.textContent = key;
-    const newNumberOfItem = document.createElement("div");
-    newNumberOfItem.textContent = list[key].length;
-    newItem.id = key;
-    newItem.append(newLetter);
-    newItem.append(newNumberOfItem);
-    listHtml.append(newItem);
-    renderContactsItems(list[key], newItem);
+    const li = createListItem(key, list[key]);
+    listHtml.append(li);
   }
 };
 
-export const renderContactsItems = (items, newItem) => {
-  items.forEach((value, index, array) => {
-    console.log(value);
-    const newConact = document.createElement("div");
-    const newName = document.createElement("div");
-    newName.textContent = value[0].value;
-    const newVacancy = document.createElement("div");
-    newVacancy.textContent = value[1].value;
-    const newPhone = document.createElement("div");
-    newPhone.textContent = value[2].value;
-    newConact.append(newName);
-    newConact.append(newVacancy);
-    newConact.append(newPhone);
-    listHtml.insertBefore(newConact, newItem);
-    console.log("wqd");
-  });
-};
+export const updateHtmlList = (list, id) => {
+  const oldItem = document.getElementById(id);
+  if (!oldItem) return;
 
-let selectedItem;
+  const newItem = createListItem(id, list[id]);
+  oldItem.replaceWith(newItem);
+};
 
 listHtml.onclick = function OpenOrCloseLi(event) {
-  let target = event.target;
-  let li = event.target.closest("li");
-  const elemId = li.id; // П
-  if (!li) return;
-  if (!listHtml.contains(li)) return;
+  const li = event.target.closest("li");
+  if (!li || !listHtml.contains(li)) return;
 
-  if (selectedItem == li || target.style.backgroundColor == "blue") {
-    li.style.backgroundColor = "#888";
-    console.log("message");
-    selectedItem = "";
-    return;
-  }
-  li.style.backgroundColor = "blue";
-  selectedItem = li;
+  const id = li.id;
+  if (!id) return;
+
+  const contacts = document.querySelectorAll(`#${id} .itemInfo__newConact`);
+
+  const isActive = Array.from(contacts).some((el) =>
+    el.classList.contains("active")
+  );
+
+  contacts.forEach((el) => {
+    if (isActive) {
+      el.classList.remove("active");
+      li.classList.remove("active");
+    } else {
+      el.classList.add("active");
+      li.classList.add("active");
+    }
+  });
 };

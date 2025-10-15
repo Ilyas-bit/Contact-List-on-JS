@@ -11,7 +11,7 @@ export function addingToList(element) {
 
       return { name, value };
     });
-  const firstLetterName = data[0].value.substr(0, 1);
+  const firstLetterName = data[0].value.substr(0, 1).toLowerCase();
 
   contactList[firstLetterName].push(data);
 }
