@@ -1,21 +1,30 @@
+import { contactList, delContact } from "./contact-list";
+
 const listHtml = document.getElementById("list");
 
 const createContactItem = (contactData) => {
-  const [name, vacancy, tel] = contactData;
+  const { name, vacancy, tel } = contactData;
 
   const newContact = document.createElement("div");
   newContact.className = "itemInfo__newConact";
 
+  const newWrapper = document.createElement("div");
+
   const nameDiv = document.createElement("div");
-  nameDiv.textContent = `Имя: ${name.value}`;
+  nameDiv.textContent = `Имя: ${name}`;
 
   const vacancyDiv = document.createElement("div");
-  vacancyDiv.textContent = `Вакансия: ${vacancy.value}`;
+  vacancyDiv.textContent = `Вакансия: ${vacancy}`;
 
   const phoneDiv = document.createElement("div");
-  phoneDiv.textContent = `Телефон: ${tel.value}`;
+  phoneDiv.textContent = `Телефон: ${tel}`;
 
-  newContact.append(nameDiv, vacancyDiv, phoneDiv);
+  const img = document.createElement("img");
+  img.src = "../public/cross.png";
+  img.alt = "Удалить контакт";
+
+  newWrapper.append(nameDiv, vacancyDiv, phoneDiv);
+  newContact.append(newWrapper, img);
 
   return newContact;
 };
@@ -37,7 +46,7 @@ const createListItem = (key, items) => {
   wrapper.className = "itemInfo";
 
   const letterDiv = document.createElement("div");
-  letterDiv.textContent = key;
+  letterDiv.textContent = key.toUpperCase();
 
   const countDiv = document.createElement("div");
   countDiv.textContent = items.length;
@@ -70,22 +79,47 @@ listHtml.onclick = function OpenOrCloseLi(event) {
   const li = event.target.closest("li");
   if (!li || !listHtml.contains(li)) return;
 
+  const isContact = event.target.closest(".itemInfo__newConact");
+  const closeButton = event.target.closest("img");
   const id = li.id;
   if (!id) return;
 
-  const contacts = document.querySelectorAll(`#${id} .itemInfo__newConact`);
+  if (closeButton && isContact) {
+    deleteContactFromList(isContact, id, li);
+    return;
+  }
 
+  if (isContact) return;
+
+  toggleContacts(id, li);
+};
+
+function deleteContactFromList(contactEl, id, li) {
+  const wrapper = contactEl.querySelector("div");
+  if (!wrapper) return;
+
+  const nameDiv = wrapper.querySelector("div");
+  if (!nameDiv) return;
+
+  const nameText = nameDiv.textContent || "";
+  if (!nameText.startsWith("Имя:")) return;
+
+  const name = nameText.replace("Имя: ", "").trim();
+
+  delContact(id, name);
+
+  contactEl.remove();
+
+  const countDiv = li.querySelector(".itemInfo div:nth-child(2)");
+  if (countDiv) countDiv.textContent = contactList[id].length;
+}
+
+function toggleContacts(id, li) {
+  const contacts = document.querySelectorAll(`#${id} .itemInfo__newConact`);
   const isActive = Array.from(contacts).some((el) =>
     el.classList.contains("active")
   );
 
-  contacts.forEach((el) => {
-    if (isActive) {
-      el.classList.remove("active");
-      li.classList.remove("active");
-    } else {
-      el.classList.add("active");
-      li.classList.add("active");
-    }
-  });
-};
+  contacts.forEach((el) => el.classList.toggle("active", !isActive));
+  li.classList.toggle("active", !isActive);
+}

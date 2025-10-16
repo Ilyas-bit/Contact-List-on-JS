@@ -92,12 +92,70 @@ h1 {
   background-color: #797979;
   width: 100%;
   border-top: #1a1a1a 1px solid;
+
+  img {
+    width: 40px;
+    cursor: pointer;
+  }
 }
+
+.itemInfo__newConact.active {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
 .active {
   display: block;
 }
-.itemInfo__newConact_active {
-  display: block;
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.modal-window {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #3a3a3a;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 320px;
+  max-width: 90%;
+  z-index: 1000;
+
+  flex-direction: column;
+  gap: 10px;
+  font-family: sans-serif;
+}
+
+.active-modal-window {
+  display: flex;
+}
+
+.modal-window__showing-contacts {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-top: 10px;
+}
+
+.modal-window__showing-contacts div {
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  background-color: #c4c4c4;
 }
 
 button {

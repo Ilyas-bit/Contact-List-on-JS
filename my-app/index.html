@@ -9,16 +9,21 @@
   <body>
     <div id="app">
       <div class="card">
-        <form id="registration-form">
+        <form name="myForm" id="registration-form">
           <input type="text" name="name" value="" placeholder="Имя" />
           <input type="text" name="vacancy" value="" placeholder="Вакансия" />
-          <input type="tel" name="tel" value="" placeholder="Вакансия" />
+          <input type="tel" name="tel" value="" placeholder="+7" />
           <input type="submit" value="добавить" />
           <button type="button" id="clear-list">Очистить список</button>
           <button type="button" id="search">Поиск</button>
         </form>
       </div>
       <ul id="list"></ul>
+      <div class="modal-overlay"></div>
+      <div class="modal-window">
+        <input type="text" id="input-search-contacts" placeholder="поиск" />
+        <div class="modal-window__showing-contacts"></div>
+      </div>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>

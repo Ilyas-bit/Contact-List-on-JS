@@ -10,3 +10,17 @@ export const makeContactList = () => {
 };
 
 makeContactList();
+
+export const delContact = (id, name) => {
+  console.log(id, name);
+  const contacts = contactList[id];
+  if (!contacts) return;
+
+  for (let i = contacts.length - 1; i >= 0; i--) {
+    if (contacts[i].name === name) {
+      contacts.splice(i, 1);
+    }
+  }
+
+  console.log(contactList);
+};
