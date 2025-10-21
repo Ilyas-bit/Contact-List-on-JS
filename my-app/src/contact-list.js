@@ -1,18 +1,27 @@
 export const contactList = {};
 
 export const makeContactList = () => {
-  const startCharCode = "a".charCodeAt(0);
+  const saved = localStorage.getItem("contactList");
 
+  if (saved) {
+    Object.assign(contactList, JSON.parse(saved));
+    return;
+  }
+
+  const startCharCode = "a".charCodeAt(0);
   for (let i = 0; i < 26; i++) {
     const char = String.fromCharCode(startCharCode + i);
     contactList[char] = [];
   }
+
+  saveContacts();
 };
 
-makeContactList();
+export const saveContacts = () => {
+  localStorage.setItem("contactList", JSON.stringify(contactList));
+};
 
 export const delContact = (id, name) => {
-  console.log(id, name);
   const contacts = contactList[id];
   if (!contacts) return;
 
@@ -22,5 +31,9 @@ export const delContact = (id, name) => {
     }
   }
 
-  console.log(contactList);
+  saveContacts();
 };
+
+window.addEventListener("beforeunload", saveContacts);
+
+makeContactList();

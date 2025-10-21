@@ -1,12 +1,14 @@
 import { contactList, delContact } from "./contact-list";
 
 const listHtml = document.getElementById("list");
+const listSearchContacts = document.getElementById("list");
 
-const createContactItem = (contactData) => {
+export const createContactItem = (contactData, isVisible) => {
   const { name, vacancy, tel } = contactData;
 
   const newContact = document.createElement("div");
-  newContact.className = "itemInfo__newConact";
+  if (!isVisible) newContact.className = "itemInfo__newConact";
+  if (isVisible) newContact.className = "item-contact";
 
   const newWrapper = document.createElement("div");
 
@@ -29,12 +31,17 @@ const createContactItem = (contactData) => {
   return newContact;
 };
 
-const renderContactsItems = (items, wrapper) => {
+export const renderContactsItems = (items, wrapper, isVisible = false) => {
   if (!items || !items.length) return;
 
   items.forEach((contactData) => {
-    const contactEl = createContactItem(contactData);
+    const contactEl = createContactItem(contactData, isVisible);
     wrapper.after(contactEl);
+    if (!isVisible) {
+      wrapper.after(contactEl);
+    } else {
+      wrapper.append(contactEl);
+    }
   });
 };
 
@@ -122,4 +129,10 @@ function toggleContacts(id, li) {
 
   contacts.forEach((el) => el.classList.toggle("active", !isActive));
   li.classList.toggle("active", !isActive);
+}
+
+export function delContactSearchItem() {
+  const contactSearchItem = document.querySelectorAll(".item-contact");
+
+  if (contactSearchItem) contactSearchItem.forEach((el) => el.remove());
 }

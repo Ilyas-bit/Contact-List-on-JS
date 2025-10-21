@@ -99,6 +99,19 @@ h1 {
   }
 }
 
+.item-contact {
+  padding: 0;
+  margin: 0;
+  background-color: #797979;
+  width: 100%;
+  border-top: #1a1a1a 1px solid;
+
+  img {
+    width: 40px;
+    cursor: pointer;
+  }
+}
+
 .itemInfo__newConact.active {
   display: flex;
   justify-content: space-between;
