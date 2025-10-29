@@ -1,9 +1,9 @@
-import { contactList, delContact } from "./contact-list";
+import { Contact, contactList, delContact } from "./contact-list";
 
 const listHtml = document.getElementById("list");
 const listSearchContacts = document.getElementById("list");
 
-export const createContactItem = (contactData, isVisible) => {
+export const createContactItem = (contactData: Contact, isVisible: boolean) => {
   const { name, vacancy, tel } = contactData;
 
   const newContact = document.createElement("div");
@@ -31,10 +31,14 @@ export const createContactItem = (contactData, isVisible) => {
   return newContact;
 };
 
-export const renderContactsItems = (items, wrapper, isVisible = false) => {
-  if (!items || !items.length) return;
+export const renderContactsItems = (
+  items: Contact[],
+  wrapper: HTMLElement | null,
+  isVisible = false
+) => {
+  if (!wrapper || !items.length) return;
 
-  items.forEach((contactData) => {
+  items.forEach((contactData: Contact) => {
     const contactEl = createContactItem(contactData, isVisible);
     wrapper.after(contactEl);
     if (!isVisible) {
@@ -45,7 +49,7 @@ export const renderContactsItems = (items, wrapper, isVisible = false) => {
   });
 };
 
-const createListItem = (key, items) => {
+const createListItem = (key: string, items: Contact[]) => {
   const li = document.createElement("li");
   li.id = key;
 
@@ -56,7 +60,7 @@ const createListItem = (key, items) => {
   letterDiv.textContent = key.toUpperCase();
 
   const countDiv = document.createElement("div");
-  countDiv.textContent = items.length;
+  countDiv.textContent = items.length.toString();
 
   wrapper.append(letterDiv, countDiv);
   li.append(wrapper);
@@ -65,16 +69,21 @@ const createListItem = (key, items) => {
   return li;
 };
 
-export const renderHtmlList = (list) => {
-  listHtml.innerHTML = "";
+export const renderHtmlList = (list: { [x: string]: Contact[] }) => {
+  if (listHtml) {
+    listHtml.innerHTML = "";
 
-  for (const key in list) {
-    const li = createListItem(key, list[key]);
-    listHtml.append(li);
+    for (const key in list) {
+      const li = createListItem(key, list[key]);
+      listHtml.append(li);
+    }
   }
 };
 
-export const updateHtmlList = (list, id) => {
+export const updateHtmlList = (
+  list: { [x: string]: Contact[] },
+  id: string
+) => {
   const oldItem = document.getElementById(id);
   if (!oldItem) return;
 
@@ -82,26 +91,35 @@ export const updateHtmlList = (list, id) => {
   oldItem.replaceWith(newItem);
 };
 
-listHtml.onclick = function OpenOrCloseLi(event) {
-  const li = event.target.closest("li");
-  if (!li || !listHtml.contains(li)) return;
+if (listHtml) {
+  listHtml.onclick = function OpenOrCloseLi(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const li = target.closest("li") as HTMLLIElement | null;
+    if (!li || !listHtml.contains(li)) return;
 
-  const isContact = event.target.closest(".itemInfo__newConact");
-  const closeButton = event.target.closest("img");
-  const id = li.id;
-  if (!id) return;
+    const isContact = target.closest(
+      ".itemInfo__newConact"
+    ) as HTMLElement | null;
+    const closeButton = target.closest("img") as HTMLImageElement | null;
+    const id = li.id;
+    if (!id) return;
 
-  if (closeButton && isContact) {
-    deleteContactFromList(isContact, id, li);
-    return;
-  }
+    if (closeButton && isContact) {
+      deleteContactFromList(isContact, id, li);
+      return;
+    }
 
-  if (isContact) return;
+    if (isContact) return;
 
-  toggleContacts(id, li);
-};
+    toggleContacts(id, li);
+  };
+}
 
-function deleteContactFromList(contactEl, id, li) {
+function deleteContactFromList(
+  contactEl: { querySelector: (arg0: string) => any; remove: () => void },
+  id: string,
+  li: { querySelector: (arg0: string) => any }
+) {
   const wrapper = contactEl.querySelector("div");
   if (!wrapper) return;
 
@@ -121,7 +139,10 @@ function deleteContactFromList(contactEl, id, li) {
   if (countDiv) countDiv.textContent = contactList[id].length;
 }
 
-function toggleContacts(id, li) {
+function toggleContacts(
+  id: any,
+  li: { classList: { toggle: (arg0: string, arg1: boolean) => void } }
+) {
   const contacts = document.querySelectorAll(`#${id} .itemInfo__newConact`);
   const isActive = Array.from(contacts).some((el) =>
     el.classList.contains("active")

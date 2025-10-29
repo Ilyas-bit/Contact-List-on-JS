@@ -1,12 +1,22 @@
 import { contactList } from "./contact-list";
 
-const isEnglish = (word) => /^[A-Za-z]+$/.test(word);
+const isEnglish = (word: string) => /^[A-Za-z]+$/.test(word);
 
 export function validateForm() {
-  const form = document.forms["myForm"];
-  const nameInput = form["name"];
-  const vacancyInput = form["vacancy"];
-  const phoneInput = form["tel"];
+  const form = document.getElementById(
+    "registration-form"
+  ) as HTMLFormElement | null;
+  if (!form) throw new Error('Form "registration-form" not found');
+
+  const nameInput = form.elements.namedItem("name") as HTMLInputElement | null;
+  const vacancyInput = form.elements.namedItem(
+    "vacancy"
+  ) as HTMLInputElement | null;
+  const phoneInput = form.elements.namedItem("tel") as HTMLInputElement | null;
+
+  if (!nameInput || !vacancyInput || !phoneInput) {
+    throw new Error("One of the inputs not found");
+  }
 
   const nameValue = nameInput.value.trim();
   const vacancyValue = vacancyInput.value.trim();

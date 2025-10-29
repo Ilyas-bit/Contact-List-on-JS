@@ -1,4 +1,12 @@
-export const contactList = {};
+export interface Contact {
+  name: string;
+  vacancy: string;
+  tel: string;
+}
+
+type ContactList = Record<string, Contact[]>;
+
+export const contactList: ContactList = {};
 
 export const makeContactList = () => {
   const saved = localStorage.getItem("contactList");
@@ -21,7 +29,7 @@ export const saveContacts = () => {
   localStorage.setItem("contactList", JSON.stringify(contactList));
 };
 
-export const delContact = (id, name) => {
+export const delContact = (id: string, name: string) => {
   const contacts = contactList[id];
   if (!contacts) return;
 
